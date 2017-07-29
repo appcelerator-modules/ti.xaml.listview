@@ -1,6 +1,6 @@
-# Titanium Windows Native Module - thin.listview
+# Titanium Windows Native Module - ti.xaml.listview
 #
-# Copyright (c) 2015 by Appcelerator, Inc. All Rights Reserved.
+# Copyright (c) 2017 by Appcelerator, Inc. All Rights Reserved.
 # Licensed under the terms of the Apache Public License.
 # Please see the LICENSE included with this distribution for details.
 
@@ -21,7 +21,7 @@ project(TiXamlListView)
 
 set(TiXamlListView_VERSION 0.1.0)
 
-set(WINDOWS_SOURCE_DIR "C:/ProgramData/Titanium/mobilesdk/win32/6.2.0.v20170724075542/windows")
+set(WINDOWS_SOURCE_DIR "C:/ProgramData/Titanium/mobilesdk/win32/6.2.0.v20170727074842/windows")
 
 SET(CMAKE_FIND_LIBRARY_PREFIXES "")
 SET(CMAKE_FIND_LIBRARY_SUFFIXES ".lib" ".dll")

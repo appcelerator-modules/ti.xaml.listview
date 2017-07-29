@@ -1,10 +1,10 @@
 # ti.xaml.listview - Lightweight ListView for Windows based on XAML DataTemplate
 
-`ti.xaml.listview` is lightweight ListView implementation that is aiming for better performance and more flexible layout & binding based on [XAML DataTemplate](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.datatemplate). `Ti.UI.Windows.ListView` acts like lightweight version of `Ti.UI.ListView` with limited functionalities, it borrows some API from `Ti.UI.ListView` so you can use `Ti.UI.ListSection` and `Ti.UI.ListItem` with it.
+`ti.xaml.listview` is lightweight ListView implementation that is aiming for better performance and more flexible layout & binding based on [XAML DataTemplate](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.datatemplate). `ti.xaml.listview` acts like lightweight version of `Ti.UI.ListView` with limited functionalities, it borrows some API from `Ti.UI.ListView` so you can use `Ti.UI.ListSection` and `Ti.UI.ListItem` with it.
 
-**Key idifferences between `Ti.UI.ListView`**
+**Key differences between `Ti.UI.ListView`**
 
-Some properties are not supported. Use [XAML DataTemplate](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.datatemplate) in `Resource/ListViewItemTemplate.xaml` instead.
+Some properties around bindings and layouts are not supported. Use [XAML DataTemplate](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.datatemplate) in `Resource/ListViewItemTemplate.xaml` instead.
 
 - `templates` property (ListView custom item template) is not supported. 
 - `headerView`, `headerTitle`, `footerView` and `footerTitle` are not supported.
@@ -187,6 +187,30 @@ for (var i = 0; i < 50; i++) {
 var section = Ti.UI.createListSection({items: items0});
 var listView = new ListView({
     sections: [section]
+});
+```
+
+
+## itemclick event
+
+Due to internal implementation aiming for better performance, `itemclick` event no longer returns item index. It simply returns `properties` values that the ListDataItem object has.
+
+```js
+var items0 = [];
+for (var i = 0; i < 50; i++) {
+    items0.push({ properties: { title: 'Fruit ' + i, image: 'Square150x150Logo.png' } });
+}
+var section = Ti.UI.createListSection({items: items0});
+var listView = new ListView({
+    sections: [section]
+});
+
+listView.addEventListener('itemclick', function (e) {
+    //
+    // itemclick event simply returns ListDataItem properties value such as
+    // { title: 'Fruit 0', image: 'Square150x150Logo.png' }
+    //
+    alert(JSON.stringify(e.properties));
 });
 ```
 
