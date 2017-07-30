@@ -1,0 +1,21 @@
+#
+# this is your module manifest and used by Titanium
+# during compilation, packaging, distribution, etc.
+#
+
+version: 1.0.0
+apiversion: 3
+architectures: ARM x86
+description: ti.xaml.listview
+author: Kota Iguchi
+license: Apache 2.0
+copyright: Copyright (c) 2017 by Axway
+
+# these should not be edited
+name: ti.xaml.listview
+moduleid: ti.xaml.listview
+moduleIdAsIdentifier: TiXamlListView
+classname: Ti::UI::WindowsXaml::ListView
+guid: c17fec33-4f98-4194-8fc2-be86dedd0874
+platform: windows
+minsdk: 6.2.0
