@@ -9,6 +9,21 @@ Some properties around bindings and layouts are not supported. Use [XAML DataTem
 - `templates` property (ListView custom item template) is not supported. 
 - `headerView`, `headerTitle`, `footerView` and `footerTitle` are not supported.
 
+## How to Build
+
+Update `WINDOWS_SRC_DIR` variable in [windows/CMakeLists.txt](windows/CMakeLists.txt) to point to Titanium SDK path that you are going to use.
+
+```
+set(WINDOWS_SOURCE_DIR "C:/ProgramData/Titanium/mobilesdk/win32/6.2.0.v20170727074842/windows")
+```
+
+Then go to `windows` folder, build it using `appc ti build`.
+
+```
+> cd windows
+> appc ti build -p windows --build-only --run-cmake -l trace
+```
+
 ## ListView sections with header
 
 ```js
