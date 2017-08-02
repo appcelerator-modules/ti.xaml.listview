@@ -1,39 +1,68 @@
-// This is a test harness for your module
-// You should do something interesting in this harness
-// to test out the module and to provide instructions
-// to users on how to use it by example.
+var ListView = require('ti.xaml.listview');
+var win = Ti.UI.createWindow({ backgroundColor: 'green', layout: 'vertical' }),
+    cmdView = Ti.UI.createView({
+        width: Ti.UI.FILL,
+        height: Ti.UI.SIZE,
+        layout: 'horizontal',
+        backgroundColor: 'gray'
+    }),
+    goSection0 = Ti.UI.createButton({
+        title: 'Section 0'
+    }),
+    goSection1 = Ti.UI.createButton({
+        title: 'Section 1'
+    }),
+    goSection2 = Ti.UI.createButton({
+        title: 'Section 2'
+    });
 
+var items0 = [],
+    items1 = [],
+    items2 = [];
 
-// open a single window
-var win = Ti.UI.createWindow({
-	backgroundColor:'white'
-});
-var label = Ti.UI.createLabel();
-win.add(label);
-win.open();
-
-// TODO: write your module tests here
-var thin_listview = require('thin.listview');
-Ti.API.info("module is => " + thin_listview);
-
-label.text = thin_listview.example();
-
-Ti.API.info("module exampleProp is => " + thin_listview.exampleProp);
-thin_listview.exampleProp = "This is a test value";
-
-if (Ti.Platform.name == "android") {
-	var proxy = thin_listview.createExample({
-		message: "Creating an example Proxy",
-		backgroundColor: "red",
-		width: 100,
-		height: 100,
-		top: 100,
-		left: 150
-	});
-
-	proxy.printMessage("Hello world!");
-	proxy.message = "Hi world!.  It's me again.";
-	proxy.printMessage("Hello world!");
-	win.add(proxy);
+for (var i = 0; i < 20; i++) {
+    items0.push({ properties: { title: 'Fruit ' + i, image: 'Square150x150Logo.png' } });
+    items1.push({ properties: { title: 'Vegetable ' + i, image: 'Square150x150Logo.png' } });
+    items2.push({ properties: { title: 'Meat ' + i, image: 'Square150x150Logo.png' } });
 }
 
+var fruitSection = Ti.UI.createListSection({
+    headerTitle: 'Fruits',
+    items: items0
+}),
+    vegSection = Ti.UI.createListSection({
+        headerTitle: 'Vegetables',
+        items: items1
+    }),
+    meatSecion = Ti.UI.createListSection({
+        headerTitle: 'Meats',
+        items: items2
+    });
+
+var listView = new ListView({
+    width: Ti.UI.FILL,
+    height: '80%',
+    sections: [fruitSection, vegSection, meatSecion]
+});
+
+goSection0.addEventListener('click', function () {
+    listView.scrollToItem(0, 0);
+});
+goSection1.addEventListener('click', function () {
+    listView.scrollToItem(1, 0);
+});
+goSection2.addEventListener('click', function () {
+    listView.scrollToItem(2, 0);
+});
+
+listView.addEventListener('itemclick', function (e) {
+    alert(JSON.stringify(e.properties));
+});
+
+cmdView.add(goSection0);
+cmdView.add(goSection1);
+cmdView.add(goSection2);
+
+win.add(cmdView);
+win.add(listView);
+win.open();
