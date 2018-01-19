@@ -3,8 +3,8 @@
 # during compilation, packaging, distribution, etc.
 #
 
-version: 1.0.0
-apiversion: 3
+version: 1.0.1
+apiversion: 4
 architectures: ARM x86
 description: ti.xaml.listview
 author: Kota Iguchi
@@ -18,4 +18,4 @@ moduleIdAsIdentifier: TiXamlListView
 classname: Ti::UI::WindowsXaml::ListView
 guid: c17fec33-4f98-4194-8fc2-be86dedd0874
 platform: windows
-minsdk: 6.2.0
+minsdk: 7.0.1.GA

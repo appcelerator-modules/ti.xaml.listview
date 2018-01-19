@@ -10,6 +10,9 @@
 	</android>
 	<mobileweb>
 	</mobileweb>
-	<windows>
-	</windows>
+    <windows>
+      <manifest>
+        <uses-sdk targetSdkVersion="10.0.14393.0" />
+      </manifest>
+    </windows>
 </ti:module>

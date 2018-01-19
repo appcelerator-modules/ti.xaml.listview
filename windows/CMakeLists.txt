@@ -21,7 +21,7 @@ project(TiXamlListView)
 
 set(TiXamlListView_VERSION 0.1.0)
 
-set(WINDOWS_SOURCE_DIR "C:/ProgramData/Titanium/mobilesdk/win32/6.2.0.v20170727074842/windows")
+set(WINDOWS_SOURCE_DIR "C:/ProgramData/Titanium/mobilesdk/win32/7.0.1.GA/windows")
 
 SET(CMAKE_FIND_LIBRARY_PREFIXES "")
 SET(CMAKE_FIND_LIBRARY_SUFFIXES ".lib" ".dll")
@@ -44,6 +44,7 @@ list(INSERT CMAKE_MODULE_PATH 0 ${APPCELERATOR_CMAKE_MODULE_PATH})
 find_package(HAL REQUIRED)
 find_package(TitaniumKit REQUIRED)
 find_package(LayoutEngine REQUIRED)
+find_package(JavaScriptCore REQUIRED)
 find_package(TitaniumWindows_Utility REQUIRED)
 find_package(TitaniumWindows_UI REQUIRED)
 
@@ -82,6 +83,7 @@ target_link_libraries(TiXamlListView
   HAL
   TitaniumKit
   LayoutEngine
+  JavaScriptCore
   TitaniumWindows_Utility
   TitaniumWindows_UI
   ${MODULE_TARGET_LIBS}
