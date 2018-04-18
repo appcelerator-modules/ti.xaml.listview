@@ -289,3 +289,105 @@ Due to internal binding implementation, only following property names are suppor
 | data0 | data1 | data2 |data3 |data4 |
 | data5 | data6 | data7 |data8 |data9 |
 
+## Using multiple templates
+
+In order to use multiple styles in the project, use `defaultItemTemplate` property. It searches for the template with the given key in the `<DataTemplate>` and apply the style, that way you can use multiple styles in one project. 
+
+Here's an example:
+
+```js
+var ListView = require('ti.xaml.listview');
+var win = Ti.UI.createWindow({ backgroundColor: 'green', layout: 'vertical' });
+
+var items0 = [],
+    items1 = [],
+    items2 = [];
+
+for (var i = 0; i < 20; i++) {
+    items0.push({ properties: { title: 'Fruit ' + i, image: 'Square150x150Logo.png' } });
+    items1.push({ properties: { title: 'Vegetable ' + i, image: 'Square150x150Logo.png' } });
+    items2.push({ properties: { title: 'Meat ' + i, image: 'Square150x150Logo.png' } });
+}
+
+var fruitSection = Ti.UI.createListSection({
+    headerTitle: 'Fruits',
+    items: items0
+}),
+    vegSection = Ti.UI.createListSection({
+        headerTitle: 'Vegetables',
+        items: items1
+    }),
+    meatSecion = Ti.UI.createListSection({
+        headerTitle: 'Meats',
+        items: items2
+    });
+
+var listView1 = new ListView({
+    width: Ti.UI.FILL,
+    height: '40%',
+    sections: [fruitSection, vegSection]
+});
+
+var listView2 = new ListView({
+    width: Ti.UI.FILL,
+    height: '40%',
+    defaultItemTemplate: 'itemTemplate2',
+    sections: [meatSecion]
+});
+
+win.add(listView1);
+win.add(listView2);
+win.open();
+```
+
+In this case, the code `defaultItemTemplate: 'itemTemplate2'` searches for `<DataTemplate x:Key=itemTemplate2>` data template in the style xml. For instance check out the template below.
+
+```xml
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <DataTemplate x:Key="defaultItemTemplate">
+        <Grid Height="60" Margin="6">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Border Background="{StaticResource ListViewItemPlaceholderBackgroundThemeBrush}" Width="54" Height="54">
+                <Image Source="{Binding Image}" Stretch="UniformToFill"/>
+            </Border>
+            <StackPanel Grid.Column="1" VerticalAlignment="Top" Margin="10,0,0,0">
+                <TextBlock Text="{Binding Title}" TextWrapping="NoWrap"/>
+                <TextBlock Text="{Binding Subtitle}" TextWrapping="NoWrap"/>
+                <TextBlock Text="{Binding Description}" MaxHeight="54"/>
+            </StackPanel>
+        </Grid>
+    </DataTemplate>
+
+    <DataTemplate x:Key="itemTemplate2">
+        <Grid Height="60" Margin="12">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Border Background="{StaticResource ListViewItemPlaceholderBackgroundThemeBrush}" Width="58" Height="58">
+                <Image Source="{Binding Image}" Stretch="UniformToFill"/>
+            </Border>
+            <StackPanel Grid.Column="1" VerticalAlignment="Top" Margin="20,0,0,0">
+                <TextBlock Text="{Binding Title}" TextWrapping="NoWrap"/>
+            </StackPanel>
+        </Grid>
+    </DataTemplate>
+
+    <GroupStyle x:Key="defaultItemTemplateGroupStyle">
+        <GroupStyle.HeaderTemplate>
+            <DataTemplate>
+                <TextBlock
+                    Text="{Binding Title}"
+                    FontSize="40" />
+            </DataTemplate>
+        </GroupStyle.HeaderTemplate>
+    </GroupStyle>
+
+</ResourceDictionary>
+```
