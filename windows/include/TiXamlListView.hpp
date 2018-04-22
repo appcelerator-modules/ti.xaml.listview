@@ -61,6 +61,8 @@ namespace Ti
 
 			private:
 				void resetData();
+				void fireItemClickEvent(ListViewModel::DataTemplateModel^, Platform::String^ bindId = "");
+
 				ListViewModel::DataTemplateModel^ createDataModel(const Titanium::UI::ListDataItem item);
 				ListViewModel::DataTemplateModelCollection^ createSectionModel(const std::shared_ptr<Titanium::UI::ListSection>& section);
 

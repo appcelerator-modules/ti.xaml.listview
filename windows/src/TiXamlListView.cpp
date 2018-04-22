@@ -108,6 +108,27 @@ namespace Ti
 				JSExport<ListView>::SetParent(JSExport<Titanium::UI::ListView>::Class());
 			}
 
+			void ListView::fireItemClickEvent(ListViewModel::DataTemplateModel^ model, Platform::String^ bindId)
+			{
+				const auto ctx = get_context();
+				auto object = ctx.CreateObject();
+				if (model) {
+					auto propsObj = ctx.CreateObject();
+					const auto properties = model->GetProperties();
+					for (auto pair : properties) {
+						propsObj.SetProperty(
+							TitaniumWindows::Utility::ConvertUTF8String(pair->Key),
+							ctx.CreateString(TitaniumWindows::Utility::ConvertUTF8String(pair->Value))
+						);
+					}
+					object.SetProperty("properties", propsObj);
+				}
+				if (!bindId->IsEmpty()) {
+					object.SetProperty("bindId", ctx.CreateString(TitaniumWindows::Utility::ConvertUTF8String(bindId)));
+				}
+				fireEvent("itemclick", object);
+			}
+
 			void ListView::enableEvent(const std::string& event_name) TITANIUM_NOEXCEPT
 			{
 				Titanium::UI::ListView::enableEvent(event_name);
@@ -117,20 +138,7 @@ namespace Ti
 				if (event_name == "itemclick") {
 					itemclick_event__ = listview__->ItemClick += ref new Controls::ItemClickEventHandler(
 						[this, ctx](Platform::Object^ sender, Controls::ItemClickEventArgs^ e) {
-						const auto item = dynamic_cast<ListViewModel::DataTemplateModel^>(e->ClickedItem);
-						auto object = ctx.CreateObject();
-						if (item) {
-							auto propsObj = ctx.CreateObject();
-							const auto properties = item->GetProperties();
-							for (auto pair : properties) {
-								propsObj.SetProperty(
-									TitaniumWindows::Utility::ConvertUTF8String(pair->Key),
-									ctx.CreateString(TitaniumWindows::Utility::ConvertUTF8String(pair->Value))
-								);
-							}
-							object.SetProperty("properties", propsObj);
-						}
-						fireEvent("itemclick", object);
+						fireItemClickEvent(dynamic_cast<ListViewModel::DataTemplateModel^>(e->ClickedItem));
 					});
 				}
 			}
@@ -277,6 +285,11 @@ namespace Ti
 			{
 				const auto properties = item.properties;
 				const auto model = ref new ListViewModel::DataTemplateModel();
+				
+				model->OnExecuted += ref new Windows::Foundation::TypedEventHandler<ListViewModel::DataTemplateModel^, Platform::String^>(
+					[this](ListViewModel::DataTemplateModel^ model, Platform::String^ bindId) {
+					fireItemClickEvent(model, bindId);
+				});
 
 				for (const auto prop : properties) {
 					model->SetProperty(

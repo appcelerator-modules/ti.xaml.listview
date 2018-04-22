@@ -391,3 +391,40 @@ In this case, the code `defaultItemTemplate: 'itemTemplate2'` searches for `<Dat
 
 </ResourceDictionary>
 ```
+
+## More complex layouts - bindId
+
+When you need to know which child component generates the event, use `Command="{Binding ExecuteCommand}"` property in XAML template that generates `bindId` from `CommandParameter` property. For instance typical `DataTemplate` that integrates which child `Button` view would look like below.
+
+```xml
+<DataTemplate x:Key="defaultItemTemplate">
+    <Grid Height="60" Margin="6">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Button Content="Push 1" Command="{Binding ExecuteCommand}" CommandParameter="Test_Button1"/>
+        <StackPanel Grid.Column="1" VerticalAlignment="Top" Margin="10,0,0,0">
+            <TextBlock Text="{Binding Title}" TextWrapping="NoWrap"/>
+            <Button Content="Push 2" Command="{Binding ExecuteCommand}" CommandParameter="Test_Button2"/>
+            <TextBlock Text="{Binding Description}" MaxHeight="54"/>
+        </StackPanel>
+    </Grid>
+</DataTemplate>
+```
+
+In this case you integrate two buttons, which is `Test_Button1` and `Test_Button2`. First note that it specifies `Command="{Binding ExecuteCommand}"` that is required in order to integate with `bindId`. Second take a look at `CommandParameter` that passes string value. This `CommandParameter` value will be the value that Titanium returns for `bindId` in `itemclick` event 
+
+
+```xml
+<Button Content="Push 1" Command="{Binding ExecuteCommand}" CommandParameter="Test_Button1"/>
+```
+
+By using `Command` and `CommandParameter` property in your DataTemplate, Titanium `itemclick` event should be able to return `bindId` for the ListView event. For instance;
+
+```js
+listView.addEventListener('itemclick', function (e) {
+    Ti.API.info(JSON.stringify(e.properties,null,2));
+    alert(e.bindId);
+});
+```
