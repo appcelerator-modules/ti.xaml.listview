@@ -4,11 +4,25 @@ using System.Collections.Generic;
 using Windows.Foundation.Collections;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Windows.Input;
 
 namespace ListViewModel
 {
     public sealed class DataTemplateModel
     {
+        class DelegateCommand : ICommand
+        {
+            public event EventHandler CanExecuteChanged;
+            private Action<object> execute;
+
+            public DelegateCommand(Action<object> execute)
+            {
+                this.execute = execute;
+            }
+            public bool CanExecute(object parameter) => true;
+            public void Execute(object parameter) => execute(parameter);
+        }
+
         //
         // common placeholders
         //
@@ -44,7 +58,25 @@ namespace ListViewModel
         public string Email { get; set; }
         public string UserName { get; set; }
 
+        public ICommand ExecuteCommand { get; set; }
+        public event Windows.Foundation.TypedEventHandler<DataTemplateModel, string> OnExecuted;
+
         private HashSet<string> properties = new HashSet<string>();
+
+        public DataTemplateModel()
+        {
+            ExecuteCommand = new DelegateCommand(OnExecute);
+        }
+
+        private void OnExecute(object parameter)
+        {
+            var handler = OnExecuted;
+            if (handler != null)
+            {
+                DataTemplateModel sender = this;
+                handler.Invoke(sender, (string)parameter);
+            }
+        }
 
         public IDictionary<string, string> GetProperties()
         {
@@ -134,6 +166,8 @@ namespace ListViewModel
 
             return false;
         }
+
+
     }
 
     public sealed class VectorChangedEventArgs : IVectorChangedEventArgs
