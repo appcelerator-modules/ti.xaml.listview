@@ -21,6 +21,8 @@ endif()
 set(TitaniumWindows_UI_ARCH "x86")
 if(CMAKE_GENERATOR MATCHES "^Visual Studio .+ ARM$")
   set(TitaniumWindows_UI_ARCH "arm")
+elseif(CMAKE_GENERATOR MATCHES "^Visual Studio .+ Win64$")
+  set(TitaniumWindows_UI_ARCH "x64")
 endif()
 
 # Create imported target TitaniumWindows_UI

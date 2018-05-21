@@ -303,7 +303,7 @@ namespace Ti
 			{
 				const auto sectionData = ref new ListViewModel::DataTemplateModelCollection();
 				sectionData->Title = TitaniumWindows::Utility::ConvertUTF8String(section->get_headerTitle());
-				for (std::size_t i = 0; i < section->get_itemCount(); i++) {
+				for (std::uint32_t i = 0; i < section->get_itemCount(); i++) {
 					sectionData->Append(createDataModel(section->getItemAt(i)));
 				}
 
