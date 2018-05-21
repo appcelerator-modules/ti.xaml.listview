@@ -21,7 +21,7 @@ project(TiXamlListView)
 
 set(TiXamlListView_VERSION 0.1.0)
 
-set(WINDOWS_SOURCE_DIR "C:/ProgramData/Titanium/mobilesdk/win32/7.1.1.GA/windows")
+set(WINDOWS_SOURCE_DIR "C:/ProgramData/Titanium/mobilesdk/win32/7.3.0.v20180520104029/windows")
 
 SET(CMAKE_FIND_LIBRARY_PREFIXES "")
 SET(CMAKE_FIND_LIBRARY_SUFFIXES ".lib" ".dll")
@@ -32,6 +32,8 @@ set(CMAKE_INCLUDE_CURRENT_DIR_IN_INTERFACE ON)
 set(TiXamlListView_ARCH "x86")
 if(CMAKE_GENERATOR MATCHES "^Visual Studio .+ ARM$")
   set(TiXamlListView_ARCH "ARM")
+elseif(CMAKE_GENERATOR MATCHES "^Visual Studio .+ Win64$")
+  set(TiXamlListView_ARCH "x64")
 endif()
 
 option(TiXamlListView_DISABLE_TESTS "Disable compiling the tests" OFF)

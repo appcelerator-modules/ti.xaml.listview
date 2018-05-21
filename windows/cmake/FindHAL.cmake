@@ -61,6 +61,8 @@ endif()
 set(HAL_ARCH "x86")
 if(CMAKE_GENERATOR MATCHES "^Visual Studio .+ ARM$")
   set(HAL_ARCH "arm")
+elseif(CMAKE_GENERATOR MATCHES "^Visual Studio .+ Win64$")
+  set(HAL_ARCH "x64")
 endif()
 
 # Taken and slightly modified from build's HAL_Targets.cmake file

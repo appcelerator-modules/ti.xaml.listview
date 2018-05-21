@@ -61,6 +61,8 @@ endif()
 set(LayoutEngine_ARCH "x86")
 if(CMAKE_GENERATOR MATCHES "^Visual Studio .+ ARM$")
   set(LayoutEngine_ARCH "arm")
+elseif(CMAKE_GENERATOR MATCHES "^Visual Studio .+ Win64$")
+  set(LayoutEngine_ARCH "x64")
 endif()
 
 # Create imported target LayoutEngine

@@ -61,6 +61,8 @@ endif()
 set(TitaniumKit_ARCH "x86")
 if(CMAKE_GENERATOR MATCHES "^Visual Studio .+ ARM$")
   set(TitaniumKit_ARCH "arm")
+elseif(CMAKE_GENERATOR MATCHES "^Visual Studio .+ Win64$")
+  set(TitaniumKit_ARCH "x64")
 endif()
 
 # Taken and slightly modified from build's TitaniumKit_Targets.cmake file

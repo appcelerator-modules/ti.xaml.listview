@@ -21,6 +21,8 @@ endif()
 set(JavaScriptCore_ARCH "x86")
 if(CMAKE_GENERATOR MATCHES "^Visual Studio .+ ARM$")
   set(JavaScriptCore_ARCH "arm")
+elseif(CMAKE_GENERATOR MATCHES "^Visual Studio .+ Win64$")
+  set(JavaScriptCore_ARCH "x64")
 endif()
 
 # Taken and slightly modified from build's JavaScriptCore_Targets.cmake file
