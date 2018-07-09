@@ -123,10 +123,18 @@ namespace Ti
 					}
 					object.SetProperty("properties", propsObj);
 				}
-				if (!bindId->IsEmpty()) {
+				if (bindId->IsEmpty() && savedEventSource__) {
+					const auto element = dynamic_cast<FrameworkElement^>(savedEventSource__);
+					if (element && !element->Name->IsEmpty()) {
+						object.SetProperty("bindId", ctx.CreateString(TitaniumWindows::Utility::ConvertUTF8String(element->Name)));
+					}
+				} else if (!bindId->IsEmpty()) {
 					object.SetProperty("bindId", ctx.CreateString(TitaniumWindows::Utility::ConvertUTF8String(bindId)));
 				}
 				fireEvent("itemclick", object);
+
+				savedEventModel__  = nullptr;
+				savedEventSource__ = nullptr;
 			}
 
 			void ListView::enableEvent(const std::string& event_name) TITANIUM_NOEXCEPT
@@ -136,9 +144,17 @@ namespace Ti
 				const JSContext ctx = this->get_context();
 
 				if (event_name == "itemclick") {
+					// Save event source that is used to detect bindId for itemclick event
+					tapped_event__ = listview__->Tapped += ref new Input::TappedEventHandler([this](Platform::Object^ sender, Input::TappedRoutedEventArgs^ e) {
+						savedEventSource__ = e->OriginalSource;
+					});
 					itemclick_event__ = listview__->ItemClick += ref new Controls::ItemClickEventHandler(
 						[this, ctx](Platform::Object^ sender, Controls::ItemClickEventArgs^ e) {
-						fireItemClickEvent(dynamic_cast<ListViewModel::DataTemplateModel^>(e->ClickedItem));
+						savedEventModel__ = e->ClickedItem;
+						// Enqueue itemclick event onto UI thread to give Tapped a chance to update original event source
+						TitaniumWindows::Utility::RunOnUIThread([this]() {
+							fireItemClickEvent(dynamic_cast<ListViewModel::DataTemplateModel^>(savedEventModel__));
+						});
 					});
 				}
 			}
@@ -149,6 +165,7 @@ namespace Ti
 
 				if (event_name == "itemclick") {
 					listview__->ItemClick -= itemclick_event__;
+					listview__->Tapped -= tapped_event__;
 				}
 			}
 

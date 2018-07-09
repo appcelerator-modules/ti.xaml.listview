@@ -394,7 +394,7 @@ In this case, the code `defaultItemTemplate: 'itemTemplate2'` searches for `<Dat
 
 ## More complex layouts - bindId
 
-When you need to know which child component generates the event, use `Command="{Binding ExecuteCommand}"` property in XAML template that generates `bindId` from `CommandParameter` property. For instance typical `DataTemplate` that integrates which child `Button` view would look like below.
+If you need to know which child component generates the event, you can use `x:Name` property in XAML template to generate `bindId` for `itemclick` event. For more advanced view that supports `Command` property such as `Button`, use `Command="{Binding ExecuteCommand}"` property in XAML template that generates `bindId` from `CommandParameter` property. For instance typical `DataTemplate` that integrates which child `Button` and `TextBlock` view would look like below.
 
 ```xml
 <DataTemplate x:Key="defaultItemTemplate">
@@ -405,22 +405,23 @@ When you need to know which child component generates the event, use `Command="{
         </Grid.ColumnDefinitions>
         <Button Content="Push 1" Command="{Binding ExecuteCommand}" CommandParameter="Test_Button1"/>
         <StackPanel Grid.Column="1" VerticalAlignment="Top" Margin="10,0,0,0">
-            <TextBlock Text="{Binding Title}" TextWrapping="NoWrap"/>
+            <TextBlock x:Name="TextBlock_title" Text="{Binding Title}" TextWrapping="NoWrap"/>
             <Button Content="Push 2" Command="{Binding ExecuteCommand}" CommandParameter="Test_Button2"/>
-            <TextBlock Text="{Binding Description}" MaxHeight="54"/>
+            <TextBlock x:Name="TextBlock_description"  Text="{Binding Description}" MaxHeight="54"/>
         </StackPanel>
     </Grid>
 </DataTemplate>
 ```
 
-In this case you integrate two buttons, which is `Test_Button1` and `Test_Button2`. First note that it specifies `Command="{Binding ExecuteCommand}"` that is required in order to integate with `bindId`. Second take a look at `CommandParameter` that passes string value. This `CommandParameter` value will be the value that Titanium returns for `bindId` in `itemclick` event 
+In this case you integrate two buttons and text blocks, which are `Test_Button1`, `Test_Button2`, `TextBlock_title` and `TextBlock_description`. For the Button views, note that it specifies `Command="{Binding ExecuteCommand}"` that is required in order to integate with `bindId`. Second take a look at `CommandParameter` that passes string value. This `CommandParameter` value will be the value that Titanium returns for `bindId` in `itemclick` event. If your views doesn't support `Command` property, use `x:Name` instead.
 
 
 ```xml
 <Button Content="Push 1" Command="{Binding ExecuteCommand}" CommandParameter="Test_Button1"/>
+<TextBlock x:Name="TextBlock_title" Text="{Binding Title}" TextWrapping="NoWrap"/>
 ```
 
-By using `Command` and `CommandParameter` property in your DataTemplate, Titanium `itemclick` event should be able to return `bindId` for the ListView event. For instance;
+By using `Command` and `CommandParameter` property or `x:Name` property in your DataTemplate, Titanium `itemclick` event should be able to return `bindId` for the ListView event. For instance;
 
 ```js
 listView.addEventListener('itemclick', function (e) {
