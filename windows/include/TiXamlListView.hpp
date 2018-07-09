@@ -76,10 +76,13 @@ namespace Ti
 				Platform::String^ defaultGroupStyle__      { "defaultItemTemplateGroupStyle" };
 				Platform::String^ listViewItemTemplateUri__{ "ms-appx:///ListViewItemTemplate.xaml" };
 
+				Platform::Object^ savedEventModel__;
+				Platform::Object^ savedEventSource__;
 		#pragma warning(push)
 		#pragma warning(disable : 4251)
 				Windows::Foundation::EventRegistrationToken itemclick_event__;
-		#pragma warning(pop)
+				Windows::Foundation::EventRegistrationToken tapped_event__;
+#pragma warning(pop)
 			};
 		} // namespace WindowsXaml
 	}  // namespace UI
