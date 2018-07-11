@@ -35,7 +35,7 @@ namespace Ti
 				listview__->IsItemClickEnabled = true;
 				listview__->SelectionMode = Controls::ListViewSelectionMode::None;
 
-				resetData();
+				reset();
 
 				parent__ = ref new Controls::Grid();
 				parent__->Children->Append(listview__);
@@ -69,7 +69,7 @@ namespace Ti
 				}
 			}
 
-			void ListView::resetData()
+			void ListView::reset()
 			{
 				const auto rd = ref new ResourceDictionary();
 				rd->Source = ref new Windows::Foundation::Uri(listViewItemTemplateUri__);
@@ -77,8 +77,7 @@ namespace Ti
 				DataTemplate^ itemTemplate;
 				if (rd->HasKey(defaultItemTemplate__)) {
 					itemTemplate = dynamic_cast<DataTemplate^>(rd->Lookup(defaultItemTemplate__));
-				}
-				else {
+				} else {
 					itemTemplate = dynamic_cast<DataTemplate^>(rd->First()->Current->Value);
 				}
 
@@ -205,8 +204,7 @@ namespace Ti
 					parent__->Children->Append(listview__);
 					parent__->SetColumn(listview__, 0);
 					parent__->SetRow(listview__, 1);
-				}
-				else {
+				} else {
 					parent__->Children->Append(listview__);
 					parent__->SetColumn(listview__, 0);
 					parent__->SetRow(listview__, 0);
@@ -235,67 +233,86 @@ namespace Ti
 					return;
 				}
 
+				begin();
+
 				const auto items = collectionViewItems__->GetAt(sectionIndex);
 
 				if (name == "append") {
 					for (std::uint32_t i = itemIndex; i < itemIndex + itemCount; i++) {
 						items->InsertAt(i, createDataModel(section->getItemAt(i)));
 					}
-				}
-				else if (name == "update" || name == "replace") {
+				} else if (name == "update" || name == "replace") {
 					// "update" and "replace" are basically same, it removes existing content and insert new one
 					for (std::uint32_t i = itemIndex; i < itemIndex + affectedRows; i++) {
 						items->SetAt(i, createDataModel(section->getItemAt(i)));
 					}
-				}
-				else if (name == "delete") {
+				} else if (name == "delete") {
 					items->RemoveAt(itemIndex);
-				}
-				else if (name == "clear") {
+				} else if (name == "clear") {
 					// clear section view except header view
 					items->Clear();
-				}
-				else if (name == "insert") {
+				} else if (name == "insert") {
 					for (std::uint32_t i = itemIndex; i < itemIndex + itemCount; i++) {
 						items->InsertAt(i, createDataModel(section->getItemAt(i)));
 					}
 				}
+
+				commit();
+
 				Titanium::UI::ListView::fireListSectionEvent(name, section, itemIndex, itemCount, affectedRows);
+			}
+
+			void ListView::commit()
+			{
+				collectionViewSource__->Source = collectionViewItems__;
+			}
+
+			void ListView::begin()
+			{
+				collectionViewSource__->Source = ref new Vector<ListViewModel::DataTemplateModelCollection^>();
 			}
 
 			void ListView::appendSection(const std::vector<std::shared_ptr<Titanium::UI::ListSection>>& sections, const std::shared_ptr<Titanium::UI::ListViewAnimationProperties>& animation) TITANIUM_NOEXCEPT
 			{
 				Titanium::UI::ListView::appendSection(sections, animation);
+				begin();
 				for (const auto section : sections) {
 					collectionViewItems__->Append(createSectionModel(section));
 				}
+				commit();
 			}
 
 			void ListView::deleteSectionAt(const uint32_t& sectionIndex, const std::shared_ptr<Titanium::UI::ListViewAnimationProperties>& animation) TITANIUM_NOEXCEPT
 			{
 				Titanium::UI::ListView::deleteSectionAt(sectionIndex, animation);
+				begin();
 				collectionViewItems__->RemoveAt(sectionIndex);
+				commit();
 			}
 
 			void ListView::insertSectionAt(const uint32_t& sectionIndex, const std::vector<std::shared_ptr<Titanium::UI::ListSection>>& sections, const std::shared_ptr<Titanium::UI::ListViewAnimationProperties>& animation) TITANIUM_NOEXCEPT
 			{
 				Titanium::UI::ListView::insertSectionAt(sectionIndex, sections, animation);
+				begin();
 				auto start = sectionIndex;
 				for (const auto section : sections) {
 					collectionViewItems__->InsertAt(start, createSectionModel(section));
 					start++;
 				}
+				commit();
 			}
 
 			void ListView::replaceSectionAt(const uint32_t& sectionIndex, const std::vector<std::shared_ptr<Titanium::UI::ListSection>>& sections, const std::shared_ptr<Titanium::UI::ListViewAnimationProperties>& animation) TITANIUM_NOEXCEPT
 			{
 				Titanium::UI::ListView::replaceSectionAt(sectionIndex, sections, animation);
+				begin();
 				collectionViewItems__->RemoveAt(sectionIndex);
 				auto start = sectionIndex;
 				for (const auto section : sections) {
 					collectionViewItems__->InsertAt(start, createSectionModel(section));
 					start++;
 				}
+				commit();
 			}
 
 			ListViewModel::DataTemplateModel^ ListView::createDataModel(const Titanium::UI::ListDataItem item)
@@ -331,6 +348,7 @@ namespace Ti
 			{
 				Titanium::UI::ListView::set_sections(sections);
 
+				begin();
 				collectionViewItems__->Clear();
 
 				auto enableGroupStyle = false;
@@ -343,6 +361,7 @@ namespace Ti
 					section->get_object().SetProperty("listview", get_object());
 					collectionViewItems__->Append(createSectionModel(section));
 				}
+				commit();
 
 				if (!enableGroupStyle) {
 					listview__->GroupStyle->Clear();
