@@ -60,8 +60,10 @@ namespace Ti
 				virtual void set_defaultItemTemplate(const std::string&) TITANIUM_NOEXCEPT override;
 
 			private:
-				void resetData();
+				void reset();
 				void fireItemClickEvent(ListViewModel::DataTemplateModel^, Platform::String^ bindId = "");
+				void begin();
+				void commit();
 
 				ListViewModel::DataTemplateModel^ createDataModel(const Titanium::UI::ListDataItem item);
 				ListViewModel::DataTemplateModelCollection^ createSectionModel(const std::shared_ptr<Titanium::UI::ListSection>& section);
