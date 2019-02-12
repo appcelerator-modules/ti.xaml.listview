@@ -11,6 +11,7 @@
 #include "tixamllistview_EXPORT.h"
 #include "Titanium/detail/TiBase.hpp"
 #include "Titanium/UI/ListView.hpp"
+#include "Titanium/UI/ListSection.hpp"
 
 namespace Ti
 {
